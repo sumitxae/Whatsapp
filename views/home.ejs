@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/391827d54c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen w-screen px-4 py-2">
+  <div class="main-container h-full w-full">
+    <div class="left-container  w-[30vw] border-r border-slate-300">
+
+<!--header -->
+      <div class="header w-full flex justify-between ">
+        <div class="flex justify-between items-center gap-3">
+          <div class="user-img w-10 h-10 rounded-full bg-red-300">
+            <img class="dp" src="<%= user.image %>" alt="">
+          </div>
+          <p class="text-slate-300 capitalize"><%= user.username %></p>
+        </div>
+        <div class="nav-icons w-1/4 ">
+          <li><i class="fa-solid fa-users text-slate-400"></i></li>
+          <li><i class="fa-solid fa-message text-slate-400"></i></li>
+          <li><i class="fa-solid fa-ellipsis-vertical text-slate-400"></i></li>
+        </div>
+      </div>
+
+
+<!-- notification -->
+      <div class="notif-box">
+        <i class="fa-solid fa-bell-slash"></i>
+        <div class="notif-text">
+             <p>Get Notified of New Messages</p>
+             <a href="#">Turn on Desktop Notifications ›</a>
+            </div>
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+
+<!--search-container -->
+      <div class="search-container">
+        <div class="input">
+<i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search or start new chat"></div>
+     <i class="fa-sharp fa-solid fa-bars-filter"></i>
+      </div>
+
+<!--chats -->
+      <div class="chat-list">
+      </div>
+
+    </div>
+
+    <div class="right-container hidden">
+<!--header -->
+      <div class="header">
+        <div class="img-text">
+          <div class="user-img  h-10 w-10 rounded-full">
+          <img class="dp talker" src="https://images.pexels.com/photos/2474307/pexels-photo-2474307.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="">
+        </div>
+          <h4 class="talker-name">Leo<br><span>Online</span></h4>
+        </div>
+        <div class="nav-icons">
+          <li><i class="fa-solid fa-magnifying-glass"></i></li>
+          <li><i class="fa-solid fa-ellipsis-vertical"></i></li>
+        </div>
+      </div>
+
+<!--chat-container -->
+      <div class="chat-container">
+       
+      </div>
+
+<!--input-bottom -->
+      <div class="chatbox-input">
+        <i class="fa-regular fa-face-grin"></i>
+        <i class="fa-sharp fa-solid fa-paperclip"></i>
+        <input type="text" class="msg" placeholder="Type a message">
+        <i class="fa-solid fa-microphone"></i>
+      </div>
+    </div>
+
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var loggedInUsername = '<%= user.username %>';
+    var loggedInUser = '<%= user._id %>'
+  </script>
+ <script src="/javascripts/client.js"></script>
+</body>
+</html>
