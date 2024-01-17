@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://kit.fontawesome.com/391827d54c.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css"rel="stylesheet"/>
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="h-screen w-screen px-4 py-2">
+<body class="h-screen w-screen px-5 py-5">
   <div class="main-container h-full w-full">
-    <div class="left-container  w-[30vw] border-r border-slate-300">
+    <div class="left-container  w-[30vw] border-r border-slate-700">
 
 <!--header -->
-      <div class="header w-full flex justify-between ">
+      <div class="header w-full flex justify-between py-8">
         <div class="flex justify-between items-center gap-3">
           <div class="user-img w-10 h-10 rounded-full bg-red-300">
             <img class="dp" src="<%= user.image %>" alt="">
@@ -29,21 +30,22 @@
 
 
 <!-- notification -->
-      <div class="notif-box">
+      <!-- <div class="notif-box">
         <i class="fa-solid fa-bell-slash"></i>
         <div class="notif-text">
              <p>Get Notified of New Messages</p>
              <a href="#">Turn on Desktop Notifications ›</a>
             </div>
         <i class="fa-solid fa-xmark"></i>
-      </div>
+      </div> -->
 
 <!--search-container -->
-      <div class="search-container">
+      <div class="search-container w-full">
         <div class="input">
-<i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Search or start new chat"></div>
-     <i class="fa-sharp fa-solid fa-bars-filter"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search or start new chat">
+        </div>
+        <i class="ri-filter-3-line"></i>
       </div>
 
 <!--chats -->
