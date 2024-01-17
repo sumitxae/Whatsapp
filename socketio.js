@@ -47,14 +47,15 @@ io.on( "connection", function( socket ) {
             $or: [
                 {
                     fromUser: userObject.sendingUser,
-                    toUser: userObject.recievingUser
+                    toUser: userObject.receivingUser
                 },
                 {
-                    fromUser: userObject.recievingUser,
+                    fromUser: userObject.receivingUser,
                     toUser: userObject.sendingUser   
                 }
             ]
-        })
+        });
+        // console.log(allMessages)
         socket.emit('chatMessage', allMessages);
     } )
 

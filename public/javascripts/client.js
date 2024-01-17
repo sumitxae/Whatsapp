@@ -7,7 +7,15 @@ socket.emit('joinServer', loggedInUsername);
 var msgbox = document.querySelector(".msg");
 msgbox.addEventListener("keypress", (event)=>{
   if (event.key === "Enter" && msgbox.value !== "") {
-    sender(msgbox.value)
+    sender(msgbox.value);
+
+    const msgObject = {
+      Message: msgbox.value,
+      toUserId: currentChattingUser,
+      loggedInUser: loggedInUser
+    }
+
+    socket.emit('privateMessage', msgObject);
     msgbox.value = ""
   }
 })    
@@ -24,12 +32,6 @@ var sender = msg => {
   chatBox.innerHTML += `<div class="message-box my-message">
       <p>${msg}</p>
     </div>`;
-  const msgObject = {
-    Message: msg,
-    toUserId: currentChattingUser,
-    loggedInUser: loggedInUser
-  }
-  socket.emit('privateMessage', msgObject);
 }
 
 socket.on('recievePrivateMessage', msg => {
@@ -75,6 +77,7 @@ socket.on('newUserJoined', (users) => {
 
 socket.on('chatMessage', allMsgs => {
     allMsgs.forEach( msg => {
+      // console.log(msg)
         if(msg.fromUser == loggedInUser) {
             sender(msg.msg);
         } else {
