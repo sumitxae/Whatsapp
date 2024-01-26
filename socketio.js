@@ -4,10 +4,11 @@ const socketapi = {
     io: io
 };
 
-const userModel = require('./routes/users');
-const msgModel = require('./routes/message');
+const userModel = require('./models/users');
+const msgModel = require('./models/message');
+const groupModel = require('./models/group');
 
-// Add your socket.io logic here!
+
 io.on( "connection", function( socket ) {
     
     socket.on("joinServer", async (username) => {
@@ -35,10 +36,10 @@ io.on( "connection", function( socket ) {
         await msgModel.create({
             msg: msgObject.Message,
             toUser: msgObject.toUserId,
-            fromUser: msgObject.loggedInUser
+            fromUser: msgObject.fromUser
         })
         const toUser = await userModel.findById(msgObject.toUserId)
-        io.to(toUser.socketId).emit('recievePrivateMessage', msgObject.Message)
+        io.to(toUser.socketId).emit('recievePrivateMessage', msgObject)
     })
 
     socket.on('getMessage', async userObject => {
@@ -57,7 +58,16 @@ io.on( "connection", function( socket ) {
         });
         // console.log(allMessages)
         socket.emit('chatMessage', allMessages);
-    } )
+    })
+
+    socket.on('newGroup', async groupObject => {
+        const newGroup = await groupModel.create({
+            groupName: groupObject.groupName
+        })
+
+        newGroup.users.push(groupObject.groupCreator);
+        await groupModel.save();
+    })
 
     socket.on('disconnect', async () => {
         await userModel.findOneAndUpdate({

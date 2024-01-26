@@ -358,11 +358,11 @@ img {
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url("/images/chatbg.png");
-  background-size: 45%;
-
-  background-position: center;
-  opacity: 0.05;  /* Adjust the opacity value (0.0 to 1.0) */
+  /* background-image: url("/images/chatbg.png");
+  background-size: cover;
+  /* background-repeat: repeat-x; */
+  /* background-position: center; */
+  /* opacity: 0.05;  Adjust the opacity value (0.0 to 1.0) */
 }
 
 .message-box {

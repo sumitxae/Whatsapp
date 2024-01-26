@@ -1,10 +1,12 @@
 var socket  = io();
 var currentChattingUser = null;
-// console.log(loggedInUser)
+let groupClickEvent = true;
 
 socket.emit('joinServer', loggedInUsername);
 
+
 var msgbox = document.querySelector(".msg");
+
 msgbox.addEventListener("keypress", (event)=>{
   if (event.key === "Enter" && msgbox.value !== "") {
     sender(msgbox.value);
@@ -12,13 +14,42 @@ msgbox.addEventListener("keypress", (event)=>{
     const msgObject = {
       Message: msgbox.value,
       toUserId: currentChattingUser,
-      loggedInUser: loggedInUser
+      fromUser: loggedInUser
     }
-
     socket.emit('privateMessage', msgObject);
     msgbox.value = ""
   }
-})    
+})  
+
+var newGroupCreator = () => {
+  var createGroup = document.querySelector(".group");
+  var groupDiv = document.querySelector(".groupDiv");
+  var groupInput = document.querySelector(".groupInput");
+  var groupButton = document.querySelector(".groupButton");
+
+  createGroup.addEventListener("click", () => {
+    if (groupClickEvent) {
+      groupDiv.style.display = "flex";
+      groupClickEvent = false; 
+    } else {
+      groupDiv.style.display = "none";
+      groupClickEvent = true;
+    }
+  })
+
+  groupButton.addEventListener("click", () => {
+    let value = groupInput.value
+    if(value) {
+      socket.emit("newGroup", {
+        groupName: value,
+        groupCreator: loggedInUser
+      })
+      groupInput.value = "";
+    }
+  })
+}
+
+newGroupCreator();  
 
 var receiver = (msg) => {
   var chatBox = document.querySelector(".chat-container");
@@ -34,8 +65,10 @@ var sender = msg => {
     </div>`;
 }
 
-socket.on('recievePrivateMessage', msg => {
-  receiver(msg);
+socket.on('recievePrivateMessage', msgObject => {
+  if (msgObject.fromUser == currentChattingUser) {
+    receiver(msgObject.Message);
+  }
 })
 
 var openChat = (img, username, chatId) => {
@@ -76,12 +109,15 @@ socket.on('newUserJoined', (users) => {
 })
 
 socket.on('chatMessage', allMsgs => {
+    document.querySelector(".chat-container").innerHTML = "";
+    
     allMsgs.forEach( msg => {
-      // console.log(msg)
         if(msg.fromUser == loggedInUser) {
             sender(msg.msg);
         } else {
             receiver(msg.msg);
         }
     });
+
 })
+

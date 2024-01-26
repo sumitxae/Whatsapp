@@ -22,12 +22,15 @@
           <p class="text-slate-300 capitalize"><%= user.username %></p>
         </div>
         <div class="nav-icons w-1/4 ">
-          <li><i class="fa-solid fa-users text-slate-400"></i></li>
+          <li><i class="group fa-solid fa-users text-slate-400"></i></li>
           <li><i class="fa-solid fa-message text-slate-400"></i></li>
           <li><i class="fa-solid fa-ellipsis-vertical text-slate-400"></i></li>
         </div>
       </div>
-
+      <div style="display: none;" class="groupDiv flex gap-5 items-center">
+        <input class="groupInput rounded-xl bg-[#202C33] ml-3 mt-2 outline-none text-slate-400 px-3 py-2 text-xs" placeholder="Enter Group Name" type="text">
+        <button class="groupButton px-2 py-1 rounded-full bg-[#00A884] font-bold" ><i class="ri-check-fill"></i></button>
+      </div>
 
 <!-- notification -->
       <!-- <div class="notif-box">
