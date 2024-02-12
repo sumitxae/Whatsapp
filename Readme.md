@@ -28,8 +28,8 @@ This project is a WhatsApp clone that allows users to chat with each other indiv
 ## Setup Instructions
 
 1. Clone the repository to your local machine.
-2. Install dependencies using `npm install`.
-3. Set up your MongoDB database and configure the connection in `app.js`.
+2. Install dependencies using `npm install or npm i`.
+3. Set up your MongoDB database and configure the connection in `db.js`.
 4. Run the server using `npx nodemon`.
 5. Open your web browser and navigate to `http://localhost:3000` to access the application.
 
