@@ -11,17 +11,18 @@ const messageSchema = mongoose.Schema({
     toUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
-        required: true
     },
     fromUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
+        required: true
     },
-    // group: {
-
-    // }
+    group: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'group'
+    }
 }, {
     timestamps: true
-})
+});
 
 module.exports = mongoose.model("Message", messageSchema);

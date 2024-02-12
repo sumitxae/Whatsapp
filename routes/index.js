@@ -1,13 +1,12 @@
 var express = require('express');
 var router = express.Router();
-const userModel = require('../models/users');
-const passport = require('passport');
 const { render } = require('ejs');
-const localStrategy = require('passport-local').Strategy;
+const upload = require('./multer');
+const { ConnectionStates } = require('mongoose');
+const contollers = require('../controllers/controls');
 
-passport.use(new localStrategy(userModel.authenticate()));
 
-/* GET home page. */
+/* GET Register page. */
 router.get('/', function(req, res, next) {
   res.render('index');
 });
@@ -16,34 +15,15 @@ router.get('/register', function(req, res, next) {
   res.render('register');
 });
 
-router.post('/register', async function(req, res, next) {
-  const user = new userModel({
-    username: req.body.username,   // User Model Feilds Here
-    contact: req.body.contact,
-  })
-  userModel.register(user, req.body.password)
-  .then(() => {
-    passport.authenticate("local") (req, res, () => {
-      res.redirect('/home')
-    })
-  })
-});
+router.post('/register', contollers.registerUser);
 
-router.post('/login', passport.authenticate('local',{
-  successRedirect: '/home',
-  failureRedirect: '/'
-}), (req, res, next) => {})
+router.post('/login', contollers.loginUser);
 
-router.get('/home', isLoggedIn, (req , res, next) => {
-  res.render("home", {user: req.user})
-})
+router.get('/home', isLoggedIn, contollers.renderHomePage);
 
-router.get('/logout', function (req, res, next) {
-  req.logout(function (err) {
-    if (err) { return next(err); }
-    res.redirect('/');
-  });
-});
+router.post('/create/groupId', upload.single('groupImage'), contollers.createGroup);
+
+router.get('/logout', contollers.logoutUser);
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();

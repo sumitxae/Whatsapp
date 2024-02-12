@@ -23,6 +23,10 @@ body {
   background-color: rgb(6, 69, 6);
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .main-container {
   position: relative;
   width: 1000px;

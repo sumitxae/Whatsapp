@@ -1,81 +1,174 @@
-const passport = require('passport');
-const io = require( 'socket.io' )();
-const socketapi = {
-    io: io
+// Importing required modules
+const passport = require("passport");
+const socketIO = require("socket.io");
+const userModel = require("./models/users");
+const msgModel = require("./models/message");
+const groupModel = require("./models/group");
+
+// Initializing Socket.IO
+const io = socketIO();
+
+// Creating an object to hold the Socket.IO instance
+const socketAPI = {
+  io: io,
 };
 
-const userModel = require('./models/users');
-const msgModel = require('./models/message');
-const groupModel = require('./models/group');
+// Array to store online users
+const onlineUsers = [];
 
+// Handling socket connections
+io.on("connection", async (socket) => {
+  // Event handler for when a user joins the server
+  socket.on("joinServer", async (username) => {
+    // Finding the current user from the database
+    const currentUser = await userModel.findOne({ username });
 
-io.on( "connection", function( socket ) {
-    
-    socket.on("joinServer", async (username) => {
-        const currentUser = await userModel.findOne({ username:username });
-        
-        const onlineUsers = await userModel.find({
-            socketId: { $nin: [ "" ] },
-            username: { $nin: [currentUser.username] }
-        })
+    // Finding online users except the current user
+    const otherOnlineUsers = onlineUsers.filter(
+      (user) => user.username !== currentUser.username
+    );
 
-        onlineUsers.forEach( onlineUser => {
-            socket.emit('newUserJoined', {
-                img: onlineUser.image,
-                username: onlineUser.username,
-                id: onlineUser._id,
-                lastMessage : "this was the last message"
-            })
-        })
+    // Emitting joined groups to the user
+    const userGroups = await groupModel.find({ members: currentUser._id });
+    socket.emit("joinedGroups", userGroups);
 
-        currentUser.socketId = socket.id;
-        await currentUser.save();
-    })
+    // Emitting information about online users to the current user
+    otherOnlineUsers.forEach((onlineUser) => {
+      socket.emit("newUserJoined", {
+        img: onlineUser.image,
+        username: onlineUser.username,
+        id: onlineUser._id,
+        lastMessage: "this was the last message",
+      });
+    });
 
-    socket.on('privateMessage', async msgObject => {
-        await msgModel.create({
-            msg: msgObject.Message,
-            toUser: msgObject.toUserId,
-            fromUser: msgObject.fromUser
-        })
-        const toUser = await userModel.findById(msgObject.toUserId)
-        io.to(toUser.socketId).emit('recievePrivateMessage', msgObject)
-    })
+    // Updating the socketId of the current user
+    currentUser.socketId = socket.id;
+    await currentUser.save();
 
-    socket.on('getMessage', async userObject => {
-        // console.log(userObject)
+    // Adding the current user to the online users array
+    onlineUsers.push(currentUser);
+  });
+
+  // Event handler for private messages
+  socket.on("privateMessage", async (msgObject) => {
+    const toUser = await userModel.findById(msgObject.toUserId);
+
+    if (!toUser) {
+      // If the recipient is not a user, it's a group message
+      await msgModel.create({
+        msg: msgObject.Message,
+        group: msgObject.toUserId,
+        fromUser: msgObject.fromUser,
+      });
+
+      // Sending the message to all members of the group
+      const group = await groupModel
+        .findById(msgObject.toUserId)
+        .populate("members");
+      if (group) {
+        msgObject.isGroup = true;
+        group.members.forEach((user) => {
+          socket.to(user.socketId).emit("recievePrivateMessage", msgObject);
+        });
+      }
+      return;
+    }
+
+    if (toUser) {
+      // If the recipient is a user, it's a private message
+      await msgModel.create({
+        msg: msgObject.Message,
+        toUser: msgObject.toUserId,
+        fromUser: msgObject.fromUser,
+      });
+      msgObject.isGroup = false;
+      io.to(toUser.socketId).emit("recievePrivateMessage", msgObject);
+    }
+  });
+
+  // Event handler for getting messages between users or from a group
+  socket.on("getMessage", async (userObject) => {
+    const toUserOrGroup = await userModel.findById(userObject.receivingUser);
+
+    if (toUserOrGroup) {
+      // If the recipient is a user, find all messages between the two users
+      const allMessages = await msgModel.find({
+        $or: [
+          {
+            fromUser: userObject.sendingUser,
+            toUser: userObject.receivingUser,
+          },
+          {
+            fromUser: userObject.receivingUser,
+            toUser: userObject.sendingUser,
+          },
+        ],
+      });
+      socket.emit("chatMessage", { allMessages, isGroup: false });
+    }
+
+    if (!toUserOrGroup) {
+      // If the recipient is a group, find all messages in the group
+      const toGroup = await groupModel.findById(userObject.receivingUser);
+      if (toGroup) {
         const allMessages = await msgModel.find({
-            $or: [
-                {
-                    fromUser: userObject.sendingUser,
-                    toUser: userObject.receivingUser
-                },
-                {
-                    fromUser: userObject.receivingUser,
-                    toUser: userObject.sendingUser   
-                }
-            ]
+          group: userObject.receivingUser,
         });
-        // console.log(allMessages)
-        socket.emit('chatMessage', allMessages);
-    })
+        socket.emit("chatMessage", { allMessages, isGroup: true });
+      }
+    }
+  });
 
-    socket.on('newGroup', async groupObject => {
-        const newGroup = await groupModel.create({
-            groupName: groupObject.groupName
-        })
+  // Event handler for searching users
+  socket.on("getUserInfo", async (searchObject) => {
+    const users = await userModel.find({
+      username: {
+        $regex: searchObject.query,
+        $options: "i",
+        $ne: searchObject.loggedInUsername,
+      },
+    });
 
-        newGroup.users.push(groupObject.groupCreator);
-        await groupModel.save();
-    })
+    // Array to hold user information
+    const foundUsers = await Promise.all(
+      users.map(async (user) => {
+        const groups = await groupModel.find({ members: user });
+        return { user, groups };
+      })
+    );
 
-    socket.on('disconnect', async () => {
-        await userModel.findOneAndUpdate({
-            socketId: socket.id
-        },{
-            socketId: ''
-        });
-    })
+    // Sending user information to the client
+    socket.emit("showUsers", { userList: foundUsers });
+  });
+
+  // Event handler for adding users to a group
+  socket.on("addUsers", async (addUsersInfo) => {
+    const group = await groupModel.findById(addUsersInfo.group);
+    addUsersInfo.users.forEach((user) => {
+      if (!group.members.includes(user)) {
+        group.members.push(user);
+        socket.emit("addStatus", true);
+      } else {
+        socket.emit("addStatus", false);
+      }
+    });
+    await group.save();
+  });
+
+  // Event handler for when a client disconnects
+  socket.on("disconnect", async () => {
+    const userIndex = onlineUsers.findIndex(
+      (user) => user.socketId === socket.id
+    );
+    if (userIndex !== -1) {
+      // Update the socketId of the disconnected user
+      const disconnectedUser = onlineUsers.splice(userIndex, 1)[0];
+      disconnectedUser.socketId = "";
+      await disconnectedUser.save();
+    }
+  });
 });
 
-module.exports = socketapi;
+// Exporting the socketAPI object
+module.exports = socketAPI;
