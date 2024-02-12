@@ -22,5 +22,12 @@ module.exports = {
       // add more rules for other file types (e.g., CSS, images) as needed
     ],
   },
+  resolve: {
+    fallback: {
+      "path": require.resolve("path-browserify"),
+      "stream": require.resolve("stream-browserify"),
+      "buffer": require.resolve("buffer/")
+    }
+  },
   // add any additional configuration options here
 };
