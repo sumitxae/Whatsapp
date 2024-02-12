@@ -65,7 +65,3 @@ whatsapp-clone/
 ## Contributing
 
 Contributions are welcome! Feel free to submit bug reports, feature requests, or pull requests.
-
----
-
-You can further customize this README with additional information specific to your project's requirements and functionalities.
