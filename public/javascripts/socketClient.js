@@ -18,7 +18,7 @@ socket.on("recievePrivateMessage", (msgObject) => {
     }
   } else {
     // Display the message from the group
-    if (msgObject.fromUser !== loggedInUser) receiver(msgObject.Message);
+    if (msgObject.fromUser !== loggedInUser && msgObject.group == currentChattingUser) receiver(msgObject.Message);
   }
 });
 

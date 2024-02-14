@@ -83,3 +83,26 @@ var showUser = (userId, userName, userProfile, bool) => {
         else container.innerHTML += alreadyExist;  
     }
 }
+
+// Function to handle group hover effect
+function groupHover() {
+    document.querySelector("#groupBorder").classList.remove("border-slate-400")
+    document.querySelector("#groupBorder").classList.add("border-[#00A884]")
+  }
+
+var selectFile = () => {
+    const inputFile = document.getElementById('chooseImage');
+    inputFile.click();
+} 
+
+var getImage = (target) => {
+    imageData = target.files[0]; 
+    console.log(imageData);
+    if (imageData) {
+        reader.readAsDataURL(imageData);
+    }
+}
+
+var imagePreviewFunction = () => {
+
+}

@@ -3,6 +3,7 @@ const userModel = require("../models/users");
 const groupModel = require("../models/group");
 const passport = require("passport");
 const { v4: uuidv4 } = require("uuid");
+const { uploadGroupDPs } = require("../routes/multer");
 const localStrategy = require("passport-local").Strategy;
 
 passport.use(new localStrategy(userModel.authenticate()));
@@ -47,10 +48,9 @@ controller.createGroup = async (req, res, next) => {
   try {
     const groupObject = JSON.parse(req.body.groupObject); // Parse group object from request body
     const { groupName, groupCreator } = groupObject; // Destructure group properties
-
     // Create new group in database
     const newGroup = await groupModel.create({
-      groupName: groupName, // Set group name
+      groupName: groupName, // Set group name 
       groupProfileImage: "/images/groupDps/" + req.file.filename, // Set group profile image path
       admin: groupCreator, // Set group admin
     });
@@ -58,6 +58,18 @@ controller.createGroup = async (req, res, next) => {
     newGroup.members.push(groupCreator); // Add group creator as member
     await newGroup.save(); // Save new group to database
     res.send(newGroup); // Send response with created group data
+  } catch (error) {
+    next(error); // Pass any errors to the error handling middleware
+  }
+};
+
+controller.editProfile = async (req, res, next) => {
+  try {
+    // console.log(req.file)
+    const { displayName, loggedInUser } = JSON.parse(req.body.userDets); // Destructure group properties
+    // Create new group in database
+    const user = await userModel.findOneAndUpdate({_id:loggedInUser},{displayName:displayName});
+    res.send(user); // Send response with created group data
   } catch (error) {
     next(error); // Pass any errors to the error handling middleware
   }

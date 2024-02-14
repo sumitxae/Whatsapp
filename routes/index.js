@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 const { render } = require('ejs');
-const upload = require('./multer');
+const {uploadGroupDPs, uploadUserDPs} = require('./multer');
 const { ConnectionStates } = require('mongoose');
 const contollers = require('../controllers/controls');
+
 
 
 /* GET Register page. */
@@ -21,7 +22,9 @@ router.post('/login', contollers.loginUser);
 
 router.get('/home', isLoggedIn, contollers.renderHomePage);
 
-router.post('/create/groupId', upload.single('groupImage'), contollers.createGroup);
+router.post('/create/groupId', uploadGroupDPs.single('groupImage'), contollers.createGroup);
+
+router.post('/change/profile', uploadUserDPs.single('userImage'), contollers.editProfile);
 
 router.get('/logout', contollers.logoutUser);
 

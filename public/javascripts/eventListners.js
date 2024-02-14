@@ -1,5 +1,6 @@
 // Variable to track if the group click event is enabled
 let groupClickEvent = true;
+let imageData = null;
 
 // DOM elements
 const msgbox = document.querySelector(".msg");
@@ -8,18 +9,14 @@ const dropdownMenu = document.querySelector('.dropdown');
 const newGroup = document.querySelector("#menu-item-0");
 const openProfile = document.querySelector("#menu-item-1");
 const logoutUser = document.querySelector("#menu-item-2");
-const groupOverlay = document.getElementById('groupOverlay');
-const imagePreview = document.getElementById("imagePreview");
-const inputFile = document.getElementById('chooseImage');
-let groupName = document.getElementById('groupName');
-const groupConfirm = document.getElementById('groupConfirm');
+const overlay = document.getElementById('overlay');
 const addUserToGroup = document.querySelector('.addUser');
-let imageData = null; 
 const reader = new FileReader();
 const searchOverlay = document.querySelector('.addUserOverlay');
 const addMemberBtn = document.querySelector('#addMembers');
 const addMemInput = document.querySelector('#addMemInput');
 const clearSearch = document.querySelector('clear-search');
+
 
 // Event listener for sending messages on Enter key press
 msgbox.addEventListener("keypress", (event)=>{
@@ -65,30 +62,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Event listener for new group button click
 newGroup.addEventListener('click', () => {
-  groupOverlay.classList.remove('left-[-100%]');
-});
+  overlay.classList.remove('left-[-100%]');
+  var template = `<header class="w-full h-1/6 bg-[#202C33] flex items-center justify-start gap-8 text-slate-300 px-5 pt-10 text-xl font-medium">
+  <i class="cursor-pointer ri-arrow-left-line"></i>
+  <p>New Group</p>
+</header>
+<div class="h-5/6 w-full flex flex-col items-center justify-start bg-[#111B21]">
+  <div id="imagePreview" class="h-[33%] cursor-pointer w-[45%] bg-[url(../images/group.png)] bg-center bg-cover rounded-full mt-7" onclick="selectFile()"></div>
+  <form action="/create/groupId" method="post" enctype="multipart/form-data">
+    <input hidden id="chooseImage" name="groupImage" type="file" onchange="getImage(this)">
+  <div class="w-full flex flex-col items-center justify-start h-[25%] mt-14 px-8">
+    <div class="w-full text-slate-400 flex items-center justify-between text-lg">
+      <input id="groupName" type="text" placeholder="Group Name" onclick="groupHover()" class="group bg-transparent outline-none">
+      <i class="ri-emoji-sticker-line"></i>
+    </div>
+    </form>
+    <div id="groupBorder" class="w-full border-t-2 mt-1 border-slate-400"></div>
+    <div id="groupConfirm" class="bg-[#00A884] text-3xl font-medium text-slate-200 rounded-full mt-10 items-center justify-center flex h-12 w-12">
+      <i class="ri-check-line cursor-pointer"></i>
+    </div>
+  </div>`
+  overlay.innerHTML = template;
 
-// Event listener for image preview click
-imagePreview.addEventListener("click", ()=>{
-  inputFile.click();
-});
-
-// Event listener for file input change
-inputFile.addEventListener("change", (event) => {
-  imageData = event.target.files[0]; 
-  if (imageData) {
-    reader.readAsDataURL(imageData);
-  }
-});
-
-// Event listener for file reader load
-reader.onload = (e) => {
-  imagePreview.classList.remove("bg-[url(../images/group.png)]");
-  imagePreview.style.backgroundImage = `url(${e.target.result})`;
-}; 
-
-// Event listener for group confirmation button click
-groupConfirm.addEventListener("click", () => {
+  const groupConfirm = document.getElementById('groupConfirm');
+  let groupName = document.getElementById('groupName');
+  
+  groupConfirm.addEventListener("click", () => {
     const groupObject = {
       groupName: groupName.value,
       groupCreator: loggedInUser,
@@ -96,31 +95,96 @@ groupConfirm.addEventListener("click", () => {
 
     const formData = new FormData();
     formData.append('groupImage', imageData);
+    // console.log(imageData)
     formData.append('groupObject', JSON.stringify(groupObject)); // Convert object to string
 
     // Send group creation request to the server
     axios.post('http://localhost:3000/create/groupId', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'groupObject': groupObject
       },
     })
       .then(response => {
         appendChat(response.data._id,response.data.groupProfileImage,
           response.data.groupName,"");
-        groupOverlay.classList.add('left-[-100%]');
+        overlay.classList.add('left-[-100%]');
       })
+  const imagePreview = document.getElementById("imagePreview");
 
   groupName.value = "";
   imagePreview.classList.add("bg-[url(../images/group.png)]");
   imagePreview.style.backgroundImage = ``;
-})
+  })
+});
 
-// Function to handle group hover effect
-function groupHover() {
-  document.querySelector("#groupBorder").classList.remove("border-slate-400")
-  document.querySelector("#groupBorder").classList.add("border-[#00A884]")
-}
+openProfile.addEventListener('click', () => {
+  overlay.classList.remove('left-[-100%]');
+  var template = `<header class="w-full h-1/6 bg-[#202C33] flex items-center justify-start gap-8 text-slate-300 px-5 pt-10 text-xl font-medium">
+  <i class="cursor-pointer ri-arrow-left-line"></i>
+  <p>Profile</p>
+</header>
+<div class="h-5/6 w-full flex flex-col items-center justify-start bg-[#111B21]">
+  <div id="imagePreview" class="h-[33%] cursor-pointer w-[45%] bg-[url(<%= user.image %>)] bg-center bg-cover rounded-full mt-7" onclick="selectFile()"></div>
+  <form action="/change/profile" method="post" enctype="multipart/form-data">
+    <input hidden id="chooseImage" name="userImage" type="file" onchange="getImage(this)">
+  <div class="w-full flex flex-col items-center justify-start h-[25%] mt-14 px-8">
+    <div class="w-full text-slate-400 flex items-center justify-between text-lg">
+      <input id="userName" type="text" placeholder="Group Name" onclick="groupHover()" class="group bg-transparent outline-none">
+      <i class="ri-emoji-sticker-line"></i>
+    </div>
+    </form>
+    <div id="groupBorder" class="w-full border-t-2 mt-1 border-slate-400"></div>
+    <div id="userConfirm" class="bg-[#00A884] text-3xl font-medium text-slate-200 rounded-full mt-10 items-center justify-center flex h-12 w-12">
+      <i class="ri-check-line cursor-pointer"></i>
+    </div>
+  </div>`
+  overlay.innerHTML = template;
+
+  const userConfirm = document.getElementById('userConfirm');
+
+  userConfirm.addEventListener("click", () => {
+    const formData = new FormData();
+    const userDets = { }
+    let userName = document.getElementById('userName');
+
+  
+    if (userName.value) {
+      userDets.displayName = userName.value;
+      userDets.loggedInUser = loggedInUser,
+  
+      formData.append('userDets', JSON.stringify(userDets));
+    }
+  
+    if (imageData) {
+      formData.append('userImage', imageData);
+    }
+  
+    axios.post('http://localhost:3000/change/profile', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+    })
+    .then(response => {
+      console.log(response)
+      overlay.classList.add('left-[-100%]');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+    const imagePreview = document.getElementById("imagePreview");
+  
+    userName.value = "";
+    imagePreview.style.backgroundImage = ``;
+  });  
+});
+
+// Event listener for file reader load
+reader.onload = (e) => {
+  const imagePreview = document.getElementById("imagePreview");
+  imagePreview.classList.remove("bg-[url(../images/group.png)]");
+  imagePreview.style.backgroundImage = `url(${e.target.result})`;
+}; 
+
 
 // Event listener for add user to group button click
 addUserToGroup.addEventListener("click", () => {
@@ -155,4 +219,8 @@ addMemberBtn.addEventListener("click", () => {
 // Event listener for clear search button click
 // clearSearch.addEventListener("click", () => {
 //   addMemInput.value = "";
+// })
+
+// newGroup.addEventListener("click", () => {
+
 // })

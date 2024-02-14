@@ -1,12 +1,15 @@
 const mongoose = require('mongoose')
 const plm = require('passport-local-mongoose');
 
+require('../db');
+
 const userSchema = mongoose.Schema({
   username: {
     type: String,
     required: [true, "Username is required"],
     unique: [true, "Username must be unique"]
   },
+  displayName: String,
   contact: String,
   image: {
     type: String,

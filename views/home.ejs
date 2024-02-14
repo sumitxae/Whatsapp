@@ -12,32 +12,14 @@
 <body class="h-screen w-screen px-5 py-5">
   <div class="main-container h-full w-full">
     <div  class="left-container relative w-[30vw] border-r border-slate-700">
-      <div id="groupOverlay" class="overlay h-full w-full bg-slate-500 z-[999] left-[-100%] absolute ">
-        <header class="w-full h-1/6 bg-[#202C33] flex items-center justify-start gap-8 text-slate-300 px-5 pt-10 text-xl font-medium">
-          <i class="cursor-pointer ri-arrow-left-line"></i>
-          <p>New Group</p>
-        </header>
-        <div class="h-5/6 w-full flex flex-col items-center justify-start bg-[#111B21]">
-          <div id="imagePreview" class="h-[33%] cursor-pointer w-[45%] bg-[url(../images/group.png)] bg-center bg-cover rounded-full mt-7"></div>
-          <form action="/create/groupId" method="post" enctype="multipart/form-data">
-            <input hidden id="chooseImage" name="groupImage" type="file">
-          <div class="w-full flex flex-col items-center justify-start h-[25%] mt-14 px-8">
-            <div class="w-full text-slate-400 flex items-center justify-between text-lg">
-              <input id="groupName" type="text" placeholder="Group Name" onclick="groupHover()" class="group bg-transparent outline-none">
-              <i class="ri-emoji-sticker-line"></i>
-            </div>
-            </form>
-            <div id="groupBorder" class="w-full border-t-2 mt-1 border-slate-400"></div>
-            <div id="groupConfirm" class="bg-[#00A884] text-3xl font-medium text-slate-200 rounded-full mt-10 items-center justify-center flex h-12 w-12">
-              <i class="ri-check-line cursor-pointer"></i>
-            </div>
-          </div>
-        </div>
+      <div id="overlay" class="overlay h-full w-full bg-slate-500 z-[999] left-[-100%] absolute ">
+        
+        
       </div>
 
 <!--header -->
       <div class="relative header w-full flex justify-between py-8">
-        <div class="flex justify-between items-center gap-3">
+        <div class="flex justify-between items-center gap-3" >
           <div class="user-img w-10 h-10 rounded-full bg-red-300">
             <img class="dp" src="<%= user.image %>" alt="">
           </div>
@@ -53,7 +35,7 @@
                 <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                 <p class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">New Group</p>   
                 <p class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Profile</p>   
-                <p class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Logout</p>
+                <a href="/logout" class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Logout</a>
               </div>
             </div>
           </div>
