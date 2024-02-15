@@ -7,8 +7,7 @@ const path = require("path");
 const Groupstorage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Set destination directory for uploaded files
-    console.log("fuck")
-    cb(null, __dirname+"/images/groupDps");
+    cb(null, path.join(__dirname, '..', 'public', 'images', 'groupDps'));
   },
   filename: function (req, file, cb) {
     // Generate unique filename using UUID v4 and keep original file extension
@@ -20,10 +19,9 @@ const Groupstorage = multer.diskStorage({
 const userDpStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Set destination directory for uploaded files
-    cb(null, __dirname+"./public/images/userDps");
+    cb(null, path.join(__dirname, '..', 'public', 'images', 'userDps'));
   },
   filename: function (req, file, cb) {
-    console.log(req)
     // Generate unique filename using UUID v4 and keep original file extension
     const uniqueFileName = uuidv4();
     cb(null, uniqueFileName + path.extname(file.originalname));
@@ -44,9 +42,9 @@ function fileFilter(req, file, cb) {
 }
 
 // Configure multer middleware with Groupstorage and file filter
-const uploadGroupDPs = multer({ Groupstorage, fileFilter });
+const uploadGroupDPs = multer({ storage:Groupstorage, fileFilter });
 
-const uploadUserDPs = multer({ userDpStorage, fileFilter });
+const uploadUserDPs = multer({ storage:userDpStorage, fileFilter });
 
 // Export configured multer middleware for file upload handling
 module.exports = {uploadGroupDPs, uploadUserDPs};

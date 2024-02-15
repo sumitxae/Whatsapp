@@ -84,6 +84,10 @@ newGroup.addEventListener('click', () => {
   </div>`
   overlay.innerHTML = template;
 
+  document.querySelector('.ri-arrow-left-line').addEventListener("click", () => {
+    overlay.classList.add('left-[-100%]');
+  })
+
   const groupConfirm = document.getElementById('groupConfirm');
   let groupName = document.getElementById('groupName');
   
@@ -122,23 +126,38 @@ openProfile.addEventListener('click', () => {
   var template = `<header class="w-full h-1/6 bg-[#202C33] flex items-center justify-start gap-8 text-slate-300 px-5 pt-10 text-xl font-medium">
   <i class="cursor-pointer ri-arrow-left-line"></i>
   <p>Profile</p>
-</header>
+</header> 
 <div class="h-5/6 w-full flex flex-col items-center justify-start bg-[#111B21]">
-  <div id="imagePreview" class="h-[33%] cursor-pointer w-[45%] bg-[url(<%= user.image %>)] bg-center bg-cover rounded-full mt-7" onclick="selectFile()"></div>
-  <form action="/change/profile" method="post" enctype="multipart/form-data">
+  <div id="imagePreview" class="h-[33%] cursor-pointer w-[45%] bg-[url(/images/userDps/${loggedInUserImage})] bg-center bg-cover rounded-full mt-7" onclick="selectFile()"></div>
+  <form action="/change/profile" class="w-full -mt-4" method="post" enctype="multipart/form-data">
     <input hidden id="chooseImage" name="userImage" type="file" onchange="getImage(this)">
-  <div class="w-full flex flex-col items-center justify-start h-[25%] mt-14 px-8">
+    <div class="w-full flex flex-col items-start justify-start h-[25%] mt-14 px-8">
+    <p class="text-xs text-green-500 mb-3">Your Name</p>
     <div class="w-full text-slate-400 flex items-center justify-between text-lg">
-      <input id="userName" type="text" placeholder="Group Name" onclick="groupHover()" class="group bg-transparent outline-none">
-      <i class="ri-emoji-sticker-line"></i>
+      <input id="userName" type="text" readonly="true" placeholder="${loggedInUsername}" onclick="groupHover()" class="group bg-transparent outline-none">
+      <i onclick="document.querySelector('#groupBorder').classList.toggle('hidden'); document.getElementById('userName').toggleAttribute('readonly')" class="ri-pencil-line"></i>
     </div>
-    </form>
-    <div id="groupBorder" class="w-full border-t-2 mt-1 border-slate-400"></div>
-    <div id="userConfirm" class="bg-[#00A884] text-3xl font-medium text-slate-200 rounded-full mt-10 items-center justify-center flex h-12 w-12">
+  </form>
+  <div id="groupBorder" class="w-full border-t-2 hidden mt-1 border-slate-400"></div>
+  <p class="text-[#8696A0] text-sm mt-6">This is not your username or pin. This name will be visible to your Whatsapp contacts.</p>
+  <div class="w-full flex flex-col items-start justify-start h-[25%] mt-10 ">
+    <p class="text-xs text-green-500 mb-5">About</p>
+    <div class="w-full text-slate-400 flex items-center justify-between text-lg">
+      <input id="userBio" type="text" readonly="true" placeholder="${loggedInUsername}" onclick="groupHover()" class="group bg-transparent outline-none">
+      <i onclick="document.querySelector('#groupBorder2').classList.toggle('hidden'); document.getElementById('userBio').toggleAttribute('readonly')" class="ri-pencil-line"></i>
+    </div>
+    <div id="groupBorder2" class="w-full border-t-2 hidden mt-1 border-slate-400"></div>
+  </div>
+  <div id="userConfirm" class="hidden bg-[#00A884] text-3xl font-medium text-slate-200 rounded-full mt-10 items-center justify-center h-12 w-12">
       <i class="ri-check-line cursor-pointer"></i>
     </div>
   </div>`
+  overlay.addEventListener("keydown", (event) => {if (event.key == 'Enter') userConfirm.click();})
   overlay.innerHTML = template;
+
+  document.querySelector('.ri-arrow-left-line').addEventListener("click", () => {
+    overlay.classList.add('left-[-100%]');
+  })
 
   const userConfirm = document.getElementById('userConfirm');
 
@@ -146,12 +165,18 @@ openProfile.addEventListener('click', () => {
     const formData = new FormData();
     const userDets = { }
     let userName = document.getElementById('userName');
+    let userBio = document.getElementById('userBio');
 
   
     if (userName.value) {
       userDets.displayName = userName.value;
       userDets.loggedInUser = loggedInUser,
   
+      formData.append('userDets', JSON.stringify(userDets));
+    }
+
+    if (userBio) {
+      userDets.userBio = userBio.value;
       formData.append('userDets', JSON.stringify(userDets));
     }
   

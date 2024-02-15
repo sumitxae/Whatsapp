@@ -12,18 +12,17 @@
 <body class="h-screen w-screen px-5 py-5">
   <div class="main-container h-full w-full">
     <div  class="left-container relative w-[30vw] border-r border-slate-700">
-      <div id="overlay" class="overlay h-full w-full bg-slate-500 z-[999] left-[-100%] absolute ">
-        
+      <div id="overlay" tabindex="0" class="overlay h-full w-full bg-slate-500 z-[999] left-[-100%] absolute ">
         
       </div>
 
 <!--header -->
       <div class="relative header w-full flex justify-between py-8">
         <div class="flex justify-between items-center gap-3" >
-          <div class="user-img w-10 h-10 rounded-full bg-red-300">
-            <img class="dp" src="<%= user.image %>" alt="">
+          <div class="user-img w-10 h-10 rounded-full">
+            <img class="dp object-cover h-full w-full" src="/images/userDps/<%= user.image %>" alt="">
           </div>
-          <p class="text-slate-300 capitalize"><%= user.username %></p>
+          <p class="text-slate-300 capitalize"><%= user.displayName %></p>
         </div>
         <div class="nav-icons w-1/4 ">
           <li><i class="group fa-solid fa-users text-slate-400"></i></li>
@@ -119,8 +118,9 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js" integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
-    var loggedInUsername = '<%= user.username %>';
-    var loggedInUser = '<%= user._id %>'
+    let loggedInUsername = '<%= user.username %>';
+    let loggedInUser = '<%= user._id %>'
+    let loggedInUserImage = '<%= user.image %>';
   </script>
  <script src="/javascripts/socketClient.js"></script>
  <script src="/javascripts/chatFunctions.js"></script>

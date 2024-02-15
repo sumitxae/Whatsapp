@@ -97,7 +97,7 @@ var selectFile = () => {
 
 var getImage = (target) => {
     imageData = target.files[0]; 
-    console.log(imageData);
+    // console.log(imageData);
     if (imageData) {
         reader.readAsDataURL(imageData);
     }

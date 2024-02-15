@@ -65,15 +65,35 @@ controller.createGroup = async (req, res, next) => {
 
 controller.editProfile = async (req, res, next) => {
   try {
-    // console.log(req.file)
-    const { displayName, loggedInUser } = JSON.parse(req.body.userDets); // Destructure group properties
-    // Create new group in database
-    const user = await userModel.findOneAndUpdate({_id:loggedInUser},{displayName:displayName});
-    res.send(user); // Send response with created group data
+    // Check for uploaded image
+    let userImage; 
+    if (req.file) {
+       userImage = req.file.filename; // Get the uploaded image filename
+    } else {
+       userImage = ""; // No image uploaded, keep existing image
+    }
+    console.log(userImage)
+
+    // Parse user information from request body (if provided)
+    const userDets = req.body.userDets ? JSON.parse(req.body.userDets) : {};
+
+    // Update user data in the database (replace with your actual database logic)
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.user._id,
+      {
+        displayName: userDets.displayName || req.user.displayName, // Use userDets or existing value
+        image: userImage || req.user.image,
+        about: userDets.userBio || req.user.userBio // Use uploaded image or existing image
+      },
+      { new: true } // Return the updated user document
+    );
+
+    res.send(updatedUser); // Send response with updated user data
   } catch (error) {
     next(error); // Pass any errors to the error handling middleware
   }
 };
+
 
 // Controller method to logout user
 controller.logoutUser = (req, res, next) => {
