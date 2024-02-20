@@ -7,7 +7,7 @@ const msgbox = document.querySelector(".msg");
 const menuButton = document.getElementById('menu-button');
 const dropdownMenu = document.querySelector('.dropdown');
 const newGroup = document.querySelector("#menu-item-0");
-const openProfile = document.querySelector("#menu-item-1");
+const openProfile = document.querySelector("#openProfile");
 const logoutUser = document.querySelector("#menu-item-2");
 const overlay = document.getElementById('overlay');
 const addUserToGroup = document.querySelector('.addUser');
@@ -98,7 +98,7 @@ newGroup.addEventListener('click', () => {
     } 
 
     const formData = new FormData();
-    formData.append('groupImage', imageData);
+    if (imageData) formData.append('groupImage', imageData);
     // console.log(imageData)
     formData.append('groupObject', JSON.stringify(groupObject)); // Convert object to string
 
@@ -118,6 +118,7 @@ newGroup.addEventListener('click', () => {
   groupName.value = "";
   imagePreview.classList.add("bg-[url(../images/group.png)]");
   imagePreview.style.backgroundImage = ``;
+  imageData = null;
   })
 });
 
@@ -128,13 +129,13 @@ openProfile.addEventListener('click', () => {
   <p>Profile</p>
 </header> 
 <div class="h-5/6 w-full flex flex-col items-center justify-start bg-[#111B21]">
-  <div id="imagePreview" class="h-[33%] cursor-pointer w-[45%] bg-[url(/images/userDps/${loggedInUserImage})] bg-center bg-cover rounded-full mt-7" onclick="selectFile()"></div>
+  <div id="imagePreview" class="h-[33%] cursor-pointer w-[45%] bg-[url(${loggedInUserImage})] bg-center bg-cover rounded-full mt-7" onclick="selectFile()"></div>
   <form action="/change/profile" class="w-full -mt-4" method="post" enctype="multipart/form-data">
     <input hidden id="chooseImage" name="userImage" type="file" onchange="getImage(this)">
     <div class="w-full flex flex-col items-start justify-start h-[25%] mt-14 px-8">
     <p class="text-xs text-green-500 mb-3">Your Name</p>
     <div class="w-full text-slate-400 flex items-center justify-between text-lg">
-      <input id="userName" type="text" readonly="true" placeholder="${loggedInUsername}" onclick="groupHover()" class="group bg-transparent outline-none">
+      <input id="userName" type="text" readonly="true" placeholder="${loggedInUserAlias}" onclick="groupHover()" class="group bg-transparent outline-none">
       <i onclick="document.querySelector('#groupBorder').classList.toggle('hidden'); document.getElementById('userName').toggleAttribute('readonly')" class="ri-pencil-line"></i>
     </div>
   </form>
@@ -170,13 +171,9 @@ openProfile.addEventListener('click', () => {
   
     if (userName.value) {
       userDets.displayName = userName.value;
-      userDets.loggedInUser = loggedInUser,
-  
-      formData.append('userDets', JSON.stringify(userDets));
-    }
+      userDets.loggedInUser = loggedInUser;
+      userDets.about = userBio ? userBio.value : '';
 
-    if (userBio) {
-      userDets.userBio = userBio.value;
       formData.append('userDets', JSON.stringify(userDets));
     }
   
@@ -190,7 +187,9 @@ openProfile.addEventListener('click', () => {
       },
     })
     .then(response => {
-      console.log(response)
+      if (response.status === 200) {
+        window.location.href = response.request.responseURL;
+      }
       overlay.classList.add('left-[-100%]');
     })
     .catch(error => {
@@ -209,7 +208,6 @@ reader.onload = (e) => {
   imagePreview.classList.remove("bg-[url(../images/group.png)]");
   imagePreview.style.backgroundImage = `url(${e.target.result})`;
 }; 
-
 
 // Event listener for add user to group button click
 addUserToGroup.addEventListener("click", () => {
@@ -241,11 +239,7 @@ addMemberBtn.addEventListener("click", () => {
   }
 })
 
-// Event listener for clear search button click
-// clearSearch.addEventListener("click", () => {
-//   addMemInput.value = "";
-// })
-
-// newGroup.addEventListener("click", () => {
-
-// })
+document.querySelector('.status').addEventListener('click', function(){
+  overlay.classList.toggle('left-[-100%]');
+  // overlay.innerHTML = 
+});

@@ -22,9 +22,9 @@ router.post('/login', contollers.loginUser);
 
 router.get('/home', isLoggedIn, contollers.renderHomePage);
 
-router.post('/create/groupId', uploadGroupDPs.single('groupImage'), contollers.createGroup);
+router.post('/create/groupId', isLoggedIn, uploadGroupDPs.single('groupImage'), contollers.createGroup);
 
-router.post('/change/profile', uploadUserDPs.single('userImage'), contollers.editProfile);
+router.post('/change/profile', isLoggedIn, uploadUserDPs.single('userImage'), contollers.editProfile);
 
 router.get('/logout', contollers.logoutUser);
 

@@ -301,7 +301,7 @@ img {
   align-items: center;
 }
 
-.right-container .header .img-text .user-img .dp {
+.right-container .header .img-text .user-img {
   position:relative;
   top: -2px;
   left: 0px;

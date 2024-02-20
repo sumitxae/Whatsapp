@@ -13,19 +13,24 @@
   <div class="main-container h-full w-full">
     <div  class="left-container relative w-[30vw] border-r border-slate-700">
       <div id="overlay" tabindex="0" class="overlay h-full w-full bg-slate-500 z-[999] left-[-100%] absolute ">
+        <header class="w-full h-1/6 bg-[#202C33] flex items-center justify-start gap-8 text-slate-300 px-5 pt-10 text-xl font-medium">
+          <i class="cursor-pointer ri-arrow-left-line"></i>
+          <p>Status</p>
+        </header>
         
       </div>
 
 <!--header -->
       <div class="relative header w-full flex justify-between py-8">
         <div class="flex justify-between items-center gap-3" >
-          <div class="user-img w-10 h-10 rounded-full">
-            <img class="dp object-cover h-full w-full" src="/images/userDps/<%= user.image %>" alt="">
+          <div id="openProfile" class="user-img w-10 h-10 rounded-full">
+            <img class="dp object-cover h-full w-full" src="<%= user.image %>" alt="">
           </div>
           <p class="text-slate-300 capitalize"><%= user.displayName %></p>
         </div>
-        <div class="nav-icons w-1/4 ">
+        <div class="nav-icons flex items-center w-1/4 ">
           <li><i class="group fa-solid fa-users text-slate-400"></i></li>
+          <li><i class="ri-loader-3-line status text-slate-400 font-medium text-2xl"></i></li>
           <li><i class="fa-solid fa-message text-slate-400"></i></li>
           <li><i class="menu fa-solid fa-ellipsis-vertical text-slate-400" aria-expanded="true" aria-haspopup="true" id="menu-button"></i></li>
           <div class="dropdown relative text-left hidden ">
@@ -33,7 +38,7 @@
               <div class="py-1 " role="none">
                 <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                 <p class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">New Group</p>   
-                <p class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Profile</p>   
+                <!-- <p class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Profile</p>    -->
                 <a href="/logout" class="text-[#CCD2D6] hover:bg-[#182229] block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Logout</a>
               </div>
             </div>
@@ -88,8 +93,8 @@
 <!--header -->
       <div class="header">
         <div class="img-text">
-          <div class="user-img  h-10 w-10 rounded-full">
-          <img class="dp talker" src="https://images.pexels.com/photos/2474307/pexels-photo-2474307.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="">
+          <div class="user-img w-10 rounded-full">
+            <img class="dp talker h-9 relative w-full object-cover" src="https://images.pexels.com/photos/2474307/pexels-photo-2474307.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="">
         </div>
           <h4 class="talker-name">Leo<br><span>Online</span></h4>
         </div>
@@ -121,6 +126,7 @@
     let loggedInUsername = '<%= user.username %>';
     let loggedInUser = '<%= user._id %>'
     let loggedInUserImage = '<%= user.image %>';
+    let loggedInUserAlias = '<%= user.displayName %>';
   </script>
  <script src="/javascripts/socketClient.js"></script>
  <script src="/javascripts/chatFunctions.js"></script>

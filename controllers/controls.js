@@ -40,7 +40,8 @@ controller.loginUser = passport.authenticate("local", {
 
 // Controller method to render home page after login
 controller.renderHomePage = (req, res, next) => {
-  res.render("home", { user: req.user }); // Render home view with user data
+  console.log("data")
+  res.render('home', { user: req.user }); // Render home view with user data
 };
 
 // Controller method to create a new group with image upload
@@ -51,9 +52,13 @@ controller.createGroup = async (req, res, next) => {
     // Create new group in database
     const newGroup = await groupModel.create({
       groupName: groupName, // Set group name 
-      groupProfileImage: "/images/groupDps/" + req.file.filename, // Set group profile image path
       admin: groupCreator, // Set group admin
     });
+
+     // If file is selected, add group profile image path
+     if (req.file) {
+      newGroup.groupProfileImage = "/images/groupDps/" + req.file.filename;
+    }
 
     newGroup.members.push(groupCreator); // Add group creator as member
     await newGroup.save(); // Save new group to database
@@ -68,15 +73,13 @@ controller.editProfile = async (req, res, next) => {
     // Check for uploaded image
     let userImage; 
     if (req.file) {
-       userImage = req.file.filename; // Get the uploaded image filename
+       userImage = "images/userDps/"+req.file.filename; // Get the uploaded image filename
     } else {
        userImage = ""; // No image uploaded, keep existing image
     }
-    console.log(userImage)
-
     // Parse user information from request body (if provided)
     const userDets = req.body.userDets ? JSON.parse(req.body.userDets) : {};
-
+    
     // Update user data in the database (replace with your actual database logic)
     const updatedUser = await userModel.findByIdAndUpdate(
       req.user._id,
@@ -88,7 +91,7 @@ controller.editProfile = async (req, res, next) => {
       { new: true } // Return the updated user document
     );
 
-    res.send(updatedUser); // Send response with updated user data
+    res.redirect('/home') // Send response with updated user data
   } catch (error) {
     next(error); // Pass any errors to the error handling middleware
   }

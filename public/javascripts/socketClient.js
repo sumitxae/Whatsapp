@@ -14,11 +14,11 @@ socket.on("recievePrivateMessage", (msgObject) => {
       msgObject.toUserId == loggedInUser
     ) {
       // Display the received message
-      receiver(msgObject.Message);
+      receiver(msgObject.msg);
     }
   } else {
     // Display the message from the group
-    if (msgObject.fromUser !== loggedInUser && msgObject.group == currentChattingUser) receiver(msgObject.Message);
+    if (msgObject.fromUser !== loggedInUser && msgObject.group == currentChattingUser) {receiver(msgObject.msg);};
   }
 });
 
@@ -103,14 +103,16 @@ socket.on("showUsers", (userListArray) => {
 });
 
 // Event: Add user status
-socket.on("addStatus", (string) => {
+socket.on("addStatus", (addObject) => {
+  
   // If a new user is added, emit a private message event
-  if (string) {
+  if (addObject.addStat) {
     const msgObject = {
-      Message: "New User Added",
+      Message: loggedInUsername+" added "+addObject.addedUser,
       toUserId: currentChattingUser,
       fromUser: loggedInUser,
     };
+    sender(msgObject.Message);
     socket.emit("privateMessage", msgObject);
   }
 });

@@ -45,7 +45,7 @@ var appendChat = (chatId,img,username,lastMessage) => {
     var chats = document.querySelector(".chat-list");
     const template = `<div id="shery_${chatId}" class="chat-box" text-slate-400 onclick="openChat('${img}','${username}','${chatId}')">
         <div class="img-box">
-            <img class="img-cover" src="${img}" alt="">
+            <img class="img-cover object-cover h-full w-full" src="${img}" alt="">
         </div>
         <div class="chat-details">
             <div class="text-head">
@@ -101,8 +101,4 @@ var getImage = (target) => {
     if (imageData) {
         reader.readAsDataURL(imageData);
     }
-}
-
-var imagePreviewFunction = () => {
-
 }

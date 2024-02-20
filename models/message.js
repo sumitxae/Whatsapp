@@ -20,6 +20,10 @@ const messageSchema = mongoose.Schema({
     group: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'group'
+    },
+    isGroup:{
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

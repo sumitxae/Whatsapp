@@ -56,20 +56,22 @@ io.on("connection", async (socket) => {
 
     if (!toUser) {
       // If the recipient is not a user, it's a group message
-      await msgModel.create({
+      const groupMsgObject = await msgModel.create({
         msg: msgObject.Message,
         group: msgObject.toUserId,
         fromUser: msgObject.fromUser,
+        isGroup: true
       });
+
+      console.log(groupMsgObject)
 
       // Sending the message to all members of the group
       const group = await groupModel
-        .findById(msgObject.toUserId)
+        .findById(groupMsgObject.group)
         .populate("members");
       if (group) {
-        msgObject.isGroup = true;
         group.members.forEach((user) => {
-          socket.to(user.socketId).emit("recievePrivateMessage", msgObject);
+          socket.to(user.socketId).emit("recievePrivateMessage", groupMsgObject);
         });
       }
       return;
@@ -82,7 +84,6 @@ io.on("connection", async (socket) => {
         toUser: msgObject.toUserId,
         fromUser: msgObject.fromUser,
       });
-      msgObject.isGroup = false;
       io.to(toUser.socketId).emit("recievePrivateMessage", msgObject);
     }
   });
@@ -144,11 +145,17 @@ io.on("connection", async (socket) => {
 
   // Event handler for adding users to a group
   socket.on("addUsers", async (addUsersInfo) => {
+    console.log(addUsersInfo)
     const group = await groupModel.findById(addUsersInfo.group);
-    addUsersInfo.users.forEach((user) => {
+    addUsersInfo.users.forEach(async (user) => {
       if (!group.members.includes(user)) {
         group.members.push(user);
-        socket.emit("addStatus", true);
+        const addedUsers = await userModel.findById(user);
+        const stat = {
+          addStat : true,
+          addedUser: addedUsers.displayName
+        }
+        socket.emit("addStatus", stat);
       } else {
         socket.emit("addStatus", false);
       }
