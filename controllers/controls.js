@@ -39,9 +39,9 @@ controller.loginUser = passport.authenticate("local", {
 });
 
 // Controller method to render home page after login
-controller.renderHomePage = (req, res, next) => {
-  console.log("data")
-  res.render('home', { user: req.user }); // Render home view with user data
+controller.renderHomePage = async (req, res, next) => {
+  console.log(await req.user.populate('chattedUsers'));
+  res.render('home', { user: await req.user.populate('chattedUsers') }); // Render home view with user data
 };
 
 // Controller method to create a new group with image upload

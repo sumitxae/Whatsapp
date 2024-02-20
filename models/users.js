@@ -22,6 +22,10 @@ const userSchema = mongoose.Schema({
     type: String,
     default: 'Add something about you'
   },
+  chattedUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  }],
   socketId:{
     type: String,
     default: ''

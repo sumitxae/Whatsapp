@@ -53,6 +53,7 @@ io.on("connection", async (socket) => {
   // Event handler for private messages
   socket.on("privateMessage", async (msgObject) => {
     const toUser = await userModel.findById(msgObject.toUserId);
+    // console.log(msgObject)
 
     if (!toUser) {
       // If the recipient is not a user, it's a group message
@@ -62,8 +63,6 @@ io.on("connection", async (socket) => {
         fromUser: msgObject.fromUser,
         isGroup: true
       });
-
-      console.log(groupMsgObject)
 
       // Sending the message to all members of the group
       const group = await groupModel
@@ -79,12 +78,20 @@ io.on("connection", async (socket) => {
 
     if (toUser) {
       // If the recipient is a user, it's a private message
-      await msgModel.create({
+      const userChatObject =  await msgModel.create({
         msg: msgObject.Message,
         toUser: msgObject.toUserId,
         fromUser: msgObject.fromUser,
+        isGroup: false
       });
-      io.to(toUser.socketId).emit("recievePrivateMessage", msgObject);
+      const fromUser = await userModel.findById(msgObject.fromUser);
+      if (!fromUser.chattedUsers.includes(toUser._id) || !toUser.chattedUsers.includes(fromUser._id)) {
+        fromUser.chattedUsers.push(toUser._id);
+        toUser.chattedUsers.push(fromUser._id);
+        await toUser.save();
+        await fromUser.save();
+      }
+      io.to(toUser.socketId).emit("recievePrivateMessage", userChatObject);  
     }
   });
 

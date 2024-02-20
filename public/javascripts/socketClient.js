@@ -11,12 +11,13 @@ socket.on("recievePrivateMessage", (msgObject) => {
     // Check if the message is from the current chatting user
     if (
       msgObject.fromUser == currentChattingUser &&
-      msgObject.toUserId == loggedInUser
+      msgObject.toUser == loggedInUser
     ) {
       // Display the received message
       receiver(msgObject.msg);
     }
   } else {
+    console.log(msgObject);
     // Display the message from the group
     if (msgObject.fromUser !== loggedInUser && msgObject.group == currentChattingUser) {receiver(msgObject.msg);};
   }

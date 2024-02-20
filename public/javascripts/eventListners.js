@@ -240,6 +240,18 @@ addMemberBtn.addEventListener("click", () => {
 })
 
 document.querySelector('.status').addEventListener('click', function(){
+  overlay.innerHTML = '';
   overlay.classList.toggle('left-[-100%]');
-  // overlay.innerHTML = 
+  var template = `<header class="w-full h-1/6 bg-[#202C33] flex items-center justify-start gap-8 text-slate-300 px-5 pt-10 text-xl font-medium">
+  <i class="cursor-pointer ri-arrow-left-line"></i>
+  <p>Status</p>
+</header> 
+<div class="h-5/6 w-full flex flex-col items-center justify-start bg-[#111B21]">
+ 
+  </div>`
+  overlay.innerHTML = template;
+
+  document.querySelector('.ri-arrow-left-line').addEventListener("click", () => {
+    overlay.classList.add('left-[-100%]');
+  })
 });

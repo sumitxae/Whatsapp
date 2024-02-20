@@ -13,11 +13,7 @@
   <div class="main-container h-full w-full">
     <div  class="left-container relative w-[30vw] border-r border-slate-700">
       <div id="overlay" tabindex="0" class="overlay h-full w-full bg-slate-500 z-[999] left-[-100%] absolute ">
-        <header class="w-full h-1/6 bg-[#202C33] flex items-center justify-start gap-8 text-slate-300 px-5 pt-10 text-xl font-medium">
-          <i class="cursor-pointer ri-arrow-left-line"></i>
-          <p>Status</p>
-        </header>
-        
+      
       </div>
 
 <!--header -->
@@ -71,6 +67,23 @@
 
 <!--cha ts -->
       <div class="chat-list">
+        <% if (user.chattedUsers) { %>
+          <% user.chattedUsers.forEach((chat) => { %>
+            <div id="shery_<%= chat._id %>" class="chat-box" text-slate-400 onclick="openChat('<%= chat.image %>','<%= chat.displayName %>','<%= chat._id %>')">
+              <div class="img-box">
+                  <img class="img-cover object-cover h-full w-full" src="<%= chat.image %>" alt="">
+              </div>
+              <div class="chat-details">
+                  <div class="text-head">
+                  <h4><%= chat.displayName %></h4>
+                  </div>
+                  <div class="text-message">
+                  <p></p>
+                  </div>
+              </div>
+          </div>
+          <% }) %>
+        <% } %>
       </div>
 
     </div>
