@@ -40,6 +40,8 @@ whatsapp-clone/
 │
 ├── public/              # Static assets
 │   ├── images/          # Image files
+        ├── userDps      # User profile pictures
+        └── groupDps     # Group profile pictures    
 │   ├── javascripts/     # Client-side JavaScript files
 │   └── stylesheets/     # CSS files
 │
