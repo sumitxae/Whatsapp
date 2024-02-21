@@ -215,13 +215,14 @@ addUserToGroup.addEventListener("click", () => {
 })
 
 // Event listener for user search input change
-addMemInput.addEventListener("change", ()=> {
-  let searchDetails = {
-    loggedInUsername,
-    query: addMemInput.value
+addMemInput.addEventListener("input", ()=> {
+  if (addMemInput.value.length > 0) {
+    let searchDetails = {
+      loggedInUsername,
+      query: addMemInput.value
+    }
+    socket.emit( "getUserInfo" , searchDetails)
   }
-  socket.emit( "getUserInfo" , searchDetails)
-  addMemInput.value = '';
 });
 
 // Event listener for add member button click
@@ -236,6 +237,7 @@ addMemberBtn.addEventListener("click", () => {
     searchOverlay.classList.toggle("hidden");
     selectedUsers = [];
     addMemberBtn.classList.add('opacity-70');
+    addMemInput.value = '';
   }
 })
 

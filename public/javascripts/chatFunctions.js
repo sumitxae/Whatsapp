@@ -10,6 +10,7 @@ var receiver = (msg) => {
     chatBox.innerHTML += `<div class="message-box friend-message">
         <p>${msg}</p>
       </div>`;
+      scroller();
 }
   
 // Function to display sent message in the chat box
@@ -18,6 +19,12 @@ var sender = msg => {
     chatBox.innerHTML += `<div class="message-box my-message">
         <p>${msg}</p>
     </div>`;
+    scroller();
+}
+
+var scroller = () => {
+    var chatBox = document.querySelector(".chat-container");
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 // Function to open chat with a user
@@ -102,3 +109,4 @@ var getImage = (target) => {
         reader.readAsDataURL(imageData);
     }
 }
+
