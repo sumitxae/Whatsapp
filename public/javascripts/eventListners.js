@@ -144,7 +144,7 @@ openProfile.addEventListener('click', () => {
   <div class="w-full flex flex-col items-start justify-start h-[25%] mt-10 ">
     <p class="text-xs text-green-500 mb-5">About</p>
     <div class="w-full text-slate-400 flex items-center justify-between text-lg">
-      <input id="userBio" type="text" readonly="true" placeholder="${loggedInUsername}" onclick="groupHover()" class="group bg-transparent outline-none">
+      <input id="userBio" type="text" readonly="true" placeholder="${loggedInUserAbout}" onclick="groupHover()" class="group bg-transparent outline-none">
       <i onclick="document.querySelector('#groupBorder2').classList.toggle('hidden'); document.getElementById('userBio').toggleAttribute('readonly')" class="ri-pencil-line"></i>
     </div>
     <div id="groupBorder2" class="w-full border-t-2 hidden mt-1 border-slate-400"></div>
@@ -169,7 +169,7 @@ openProfile.addEventListener('click', () => {
     let userBio = document.getElementById('userBio');
 
   
-    if (userName.value) {
+    if (userName.value || userBio.value) {
       userDets.displayName = userName.value;
       userDets.loggedInUser = loggedInUser;
       userDets.about = userBio ? userBio.value : '';

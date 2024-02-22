@@ -39,8 +39,7 @@ controller.loginUser = passport.authenticate("local", {
 });
 
 // Controller method to render home page after login
-controller.renderHomePage = async (req, res, next) => {
-  console.log(await req.user.populate('chattedUsers'));
+controller.renderHomePage = async (req, res, next) => { 
   res.render('home', { user: await req.user.populate('chattedUsers') }); // Render home view with user data
 };
 
@@ -79,14 +78,14 @@ controller.editProfile = async (req, res, next) => {
     }
     // Parse user information from request body (if provided)
     const userDets = req.body.userDets ? JSON.parse(req.body.userDets) : {};
-    
+
     // Update user data in the database (replace with your actual database logic)
     const updatedUser = await userModel.findByIdAndUpdate(
       req.user._id,
       {
         displayName: userDets.displayName || req.user.displayName, // Use userDets or existing value
         image: userImage || req.user.image,
-        about: userDets.userBio || req.user.userBio // Use uploaded image or existing image
+        about: userDets.about || req.user.about // Use uploaded image or existing image
       },
       { new: true } // Return the updated user document
     );
