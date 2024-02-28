@@ -1,7 +1,3 @@
-Sure, here's a simplified version of the README.md without licensing information:
-
----
-
 # WhatsApp Clone
 
 This project is a WhatsApp clone that allows users to chat with each other individually or in groups. It's built using Node.js, Express.js, MongoDB, Socket.io, and EJS.
